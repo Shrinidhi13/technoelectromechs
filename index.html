@@ -27,6 +27,245 @@
     /* ═══ CUSTOM CURSOR ═══ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
 
+    /* ══════════════════════════════════════════
+       LOADING SCREEN
+    ══════════════════════════════════════════ */
+    #loader-screen {
+      position: fixed; inset: 0; z-index: 99999;
+      background: #080808;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #loader-screen.hide {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    body.loading { overflow: hidden; }
+
+    /* Grid overlay */
+    .loader-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      opacity: 0.025;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+      background-size: 70px 70px;
+    }
+
+    /* Noise overlay */
+    .loader-noise {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Red ambient glow */
+    .loader-glow {
+      position: absolute;
+      bottom: -100px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 340px;
+      background: radial-gradient(ellipse, rgba(227,24,55,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Scan line */
+    .loader-scan {
+      position: absolute; top: 0; left: 0; right: 0; height: 1.5px;
+      background: linear-gradient(90deg, transparent, rgba(227,24,55,0.5), transparent);
+      animation: loaderScan 2.5s ease-in-out 0.2s 2;
+    }
+    @keyframes loaderScan {
+      0%   { top: 0; opacity: 0; }
+      8%   { opacity: 0.6; }
+      92%  { opacity: 0.1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* Road */
+    .loader-road {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 80px; background: #0d0d0d;
+      border-top: 1px solid #1a1a1a;
+    }
+    .loader-road-dashes {
+      position: absolute; top: 50%; left: 0; right: 0; height: 2px;
+      margin-top: -1px;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(227,24,55,0.5) 0px, rgba(227,24,55,0.5) 36px,
+        transparent 36px, transparent 72px
+      );
+      animation: dashMove 0.35s linear infinite;
+    }
+    @keyframes dashMove {
+      from { background-position: 0 0; }
+      to   { background-position: -72px 0; }
+    }
+
+    /* ── Car wrapper ── */
+    #loader-car-wrap {
+      position: absolute;
+      bottom: 18px;
+      left: -360px;
+      width: 280px;
+      animation: carDrive 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+      z-index: 10;
+    }
+    @keyframes carDrive {
+      0%   { left: -360px; }
+      68%  { left: calc(50% - 140px + 22px); }
+      82%  { left: calc(50% - 140px - 10px); }
+      100% { left: calc(50% - 140px); }
+    }
+
+    /* Car SVG wheels rotate while driving */
+    #loader-car-wrap svg .car-wheel {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: wheelSpin 0.18s linear 0.15s 7;
+    }
+    @keyframes wheelSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Exhaust puffs */
+    .loader-exhaust {
+      position: absolute;
+      left: 4px; bottom: 22px;
+      display: flex; flex-direction: row-reverse; gap: 3px; align-items: center;
+    }
+    .loader-puff {
+      border-radius: 50%; background: rgba(180,180,180,0.25);
+      animation: puffAnim 0.55s ease-out infinite;
+    }
+    .loader-puff:nth-child(1) { width: 12px; height: 12px; animation-delay: 0.15s; }
+    .loader-puff:nth-child(2) { width: 8px;  height: 8px;  animation-delay: 0.3s; }
+    .loader-puff:nth-child(3) { width: 5px;  height: 5px;  animation-delay: 0.45s; }
+    @keyframes puffAnim {
+      0%   { transform: translateX(0) scale(1); opacity: 0.45; }
+      100% { transform: translateX(-28px) scale(2.8); opacity: 0; }
+    }
+
+    /* Headlight beam */
+    .loader-headlight {
+      position: absolute;
+      right: -100px; top: 50%; transform: translateY(-60%);
+      width: 130px; height: 50px;
+      background: radial-gradient(ellipse at left center, rgba(255,228,100,0.28) 0%, transparent 80%);
+      opacity: 0;
+      animation: hlFade 1.3s ease 0.15s forwards;
+      pointer-events: none;
+    }
+    @keyframes hlFade {
+      0%,50% { opacity: 0; }
+      100%    { opacity: 1; }
+    }
+
+    /* ── Text content ── */
+    .loader-content {
+      text-align: center;
+      margin-bottom: 108px;
+      position: relative; z-index: 5;
+      animation: loaderTextIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
+    }
+    @keyframes loaderTextIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .loader-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(197,160,89,0.8);
+      margin-bottom: 14px;
+    }
+    .loader-eyebrow::before,
+    .loader-eyebrow::after {
+      content: ''; display: block;
+      width: 28px; height: 1px; background: rgba(197,160,89,0.5);
+    }
+
+    .loader-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 9vw, 92px);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fff; line-height: 0.9;
+      margin-bottom: 4px;
+    }
+    .loader-brand em { color: #e31837; font-style: normal; }
+
+    .loader-gold-line {
+      width: 52px; height: 2px;
+      background: #c5a059;
+      margin: 16px auto;
+      border-radius: 1px;
+      animation: goldExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.55s both;
+      transform-origin: center; transform: scaleX(0);
+    }
+    @keyframes goldExpand {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    .loader-tagline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(10px, 2vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #444;
+      max-width: 480px;
+      margin: 0 auto 6px;
+      line-height: 1.7;
+    }
+    .loader-tagline strong { color: #666; }
+
+    /* Progress bar */
+    .loader-bar-wrap {
+      width: clamp(200px, 38vw, 300px);
+      margin: 22px auto 0;
+      position: relative;
+    }
+    .loader-bar-pct {
+      position: absolute; right: 0; top: -18px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; color: #2a2a2a;
+    }
+    .loader-bar-track {
+      width: 100%; height: 2px;
+      background: #181818; border-radius: 1px; overflow: hidden;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #e31837 0%, #ff5533 100%);
+      border-radius: 1px;
+      width: 0%;
+      animation: barFill 2.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+    }
+    @keyframes barFill {
+      0%   { width: 0%; }
+      25%  { width: 40%; }
+      55%  { width: 68%; }
+      80%  { width: 88%; }
+      100% { width: 100%; }
+    }
+
+    .loader-status {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: #252525;
+      margin-top: 10px; text-align: center;
+    }
+
+    /* ══════════════════════════════════════════
+       ORIGINAL SITE STYLES BELOW
+    ══════════════════════════════════════════ */
+
     #cursor-wrap {
       position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
@@ -46,7 +285,6 @@
     }
     body.cursor-hover #cursor-svg { width: 54px; height: 54px; filter: drop-shadow(0 0 12px rgba(255,140,0,1)); }
 
-    /* ═══ DESIGN TOKENS ═══ */
     :root {
       --red: #e31837;
       --red-dark: #b8112b;
@@ -75,15 +313,12 @@
       font-family: var(--fb); font-size: 16px; line-height: 1.65;
       overflow-x: hidden;
     }
-
-    /* ═══ NOISE TEXTURE ═══ */
     body::after {
       content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9990;
       opacity: 0.025;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* ═══ UTILITY ═══ */
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
     .section { padding: 100px 0; }
 
@@ -126,7 +361,6 @@
     .btn-wa { background: #25D366; color: #fff; }
     .btn-wa:hover { background: #1db954; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
 
-    /* ═══ NAVBAR ═══ */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       border-bottom: 1px solid var(--border-light);
@@ -177,7 +411,6 @@
     }
     .nav-ham span { display: block; width: 22px; height: 1.5px; background: #fff; transition: all 0.3s; }
 
-    /* ═══ MOBILE NAV ═══ */
     .mob-nav {
       display: none; position: fixed; inset: 0; z-index: 600;
       background: var(--black); flex-direction: column;
@@ -191,7 +424,6 @@
     .mob-nav a:hover { color: var(--red); }
     .mob-close { position: absolute; top: 24px; right: 28px; background: none; border: none; color: #fff; font-size: 28px; }
 
-    /* ═══ HERO ═══ */
     #hero {
       min-height: 100vh; display: flex; align-items: center; padding-top: 72px;
       position: relative; overflow: hidden;
@@ -203,7 +435,6 @@
         radial-gradient(ellipse 50% 80% at 5% 80%, rgba(197,160,89,0.05) 0%, transparent 55%),
         linear-gradient(170deg, #0a0a0a 0%, #0e0e0e 100%);
     }
-    /* Animated red scan line */
     .hero-scanline {
       position: absolute; top: 0; left: 0; right: 0;
       height: 2px; background: linear-gradient(90deg, transparent, var(--red), transparent);
@@ -221,7 +452,6 @@
         linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
       background-size: 80px 80px;
     }
-    /* Diagonal accent line */
     .hero-diag {
       position: absolute; top: 0; right: 20%; width: 1px; height: 100%;
       background: linear-gradient(to bottom, transparent, rgba(227,24,55,0.3), transparent);
@@ -281,7 +511,6 @@
       animation: fadeUp 0.8s 0.3s var(--ease-out) both;
     }
 
-    /* Stats */
     .hero-stats {
       display: flex; gap: 0; margin-top: 72px;
       border-top: 1px solid var(--border-light);
@@ -312,7 +541,6 @@
 
     @keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ═══ TICKER ═══ */
     #ticker {
       background: var(--surface-2);
       border-top: 1px solid var(--border);
@@ -331,7 +559,6 @@
     }
     .tick-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
 
-    /* ═══ SLIDER ═══ */
     #slider-section {
       background: var(--surface); padding: 0;
       border-bottom: 1px solid var(--border);
@@ -360,7 +587,6 @@
       font-family: var(--fm); font-size: 11px; font-weight: 600;
       letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
     }
-    /* Serial number tag */
     .slide-tag {
       position: absolute; top: 14px; right: 14px;
       font-family: var(--fm); font-size: 9px; font-weight: 600;
@@ -370,7 +596,6 @@
     }
     @keyframes autoScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-    /* ═══ TRUST STRIP ═══ */
     #trust-strip {
       background: var(--surface-2);
       border-bottom: 1px solid var(--border);
@@ -393,7 +618,6 @@
     .tbadge-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
     .tbadge-gold .tbadge-label { color: var(--gold); }
 
-    /* ═══ PRODUCTS ═══ */
     #products { background: var(--black); }
     .prod-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -410,7 +634,6 @@
     }
     .prod-card:hover { background: var(--surface-2); }
     .prod-card:hover::before { width: 100%; }
-    /* Machine plate serial number */
     .prod-serial {
       position: absolute; top: 18px; right: 20px;
       font-family: var(--fm); font-size: 9px; font-weight: 500;
@@ -435,7 +658,6 @@
       padding: 6px 14px; border-radius: 1px;
     }
 
-    /* ═══ COMPLIANCE ═══ */
     #compliance {
       background: var(--red-dark);
       position: relative; overflow: hidden;
@@ -446,7 +668,6 @@
       font-family: var(--fh); font-size: 260px; color: rgba(0,0,0,0.15);
       line-height: 1; pointer-events: none; letter-spacing: -0.02em;
     }
-    /* Diagonal stripe accent */
     #compliance::after {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: repeating-linear-gradient(
@@ -480,7 +701,6 @@
       letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px;
     }
 
-    /* ═══ SERVICES ═══ */
     #services { background: var(--surface); }
     .svc-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -505,7 +725,6 @@
     }
     .svc-card p { font-size: 13px; color: #666; line-height: 1.7; }
 
-    /* ═══ WHY US ═══ */
     #why { background: var(--black); }
     .why-grid {
       display: grid; grid-template-columns: 1fr 1fr;
@@ -526,7 +745,6 @@
     }
     .why-t p { font-size: 14px; color: #666; line-height: 1.75; }
 
-    /* Glass testimonial card */
     .why-right {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
@@ -564,7 +782,6 @@
     }
     .ctag:hover { border-color: var(--red); color: var(--text); }
 
-    /* ═══ SECTORS ═══ */
     #sectors { background: var(--surface); }
     .sec-list {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -583,7 +800,6 @@
       text-transform: uppercase; letter-spacing: 0.06em; color: #bbb;
     }
 
-    /* ═══ CONTACT ═══ */
     #contact { background: var(--black); }
     .con-grid {
       display: grid; grid-template-columns: 1fr 1.3fr;
@@ -639,7 +855,6 @@
     .fg textarea { resize: vertical; min-height: 100px; }
     .fsub { width: 100%; margin-top: 12px; justify-content: center; font-size: 14px; padding: 18px; }
 
-    /* ═══ MAP ═══ */
     #locate { background: var(--surface); padding: 0; }
     .map-wrapper { display: grid; grid-template-columns: 1fr 1.8fr; min-height: 460px; }
     .map-info {
@@ -670,7 +885,6 @@
     .map-embed { position: relative; overflow: hidden; min-height: 460px; }
     .map-embed iframe { width: 100%; height: 100%; min-height: 460px; border: none; display: block; }
 
-    /* ═══ WHATSAPP POPUP ═══ */
     .wa-popup {
       position: fixed; bottom: 104px; right: 28px; z-index: 900;
       background: #fff; border-radius: 12px 12px 2px 12px;
@@ -695,7 +909,6 @@
     }
     .wa-popup-btn:hover { background: #1ea855; }
 
-    /* ═══ FLOAT BUTTON ═══ */
     .wa-float {
       position: fixed; bottom: 28px; right: 28px; z-index: 850;
       width: 60px; height: 60px; border-radius: 50%; background: #25D366;
@@ -707,7 +920,6 @@
     .wa-float svg { width: 30px; height: 30px; fill: #fff; }
     @keyframes waFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
 
-    /* ═══ FOOTER ═══ */
     footer {
       background: var(--black); padding: 40px 0;
       border-top: 1px solid var(--border);
@@ -730,7 +942,6 @@
     }
     .foot-links a:hover { color: var(--red); }
 
-    /* ═══ TOAST ═══ */
     .toast {
       position: fixed; top: 84px; right: 20px;
       background: var(--surface-2); border: 1px solid var(--border);
@@ -741,11 +952,9 @@
     }
     .toast.show { opacity: 1; transform: translateX(0); }
 
-    /* ═══ REVEAL ═══ */
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ═══ RESPONSIVE ═══ */
     @media(max-width: 900px) {
       .why-grid, .con-grid { grid-template-columns: 1fr; gap: 48px; }
       .map-wrapper { grid-template-columns: 1fr; }
@@ -766,6 +975,13 @@
       .slider-slide { width: 300px; height: 240px; }
       .slider-wrapper { height: 240px; }
       .tbadge { padding: 22px 28px; }
+      #loader-car-wrap { width: 200px; }
+      @keyframes carDrive {
+        0%   { left: -260px; }
+        68%  { left: calc(50% - 100px + 16px); }
+        82%  { left: calc(50% - 100px - 8px); }
+        100% { left: calc(50% - 100px); }
+      }
     }
     @media(max-width: 600px) {
       .trust-inner { flex-direction: column; }
@@ -774,42 +990,162 @@
     }
   </style>
 </head>
-<body>
+<body class="loading">
+
+<!-- ═══════════════════════════════════════
+     LOADING SCREEN
+════════════════════════════════════════ -->
+<div id="loader-screen" role="status" aria-label="Loading Techno Electromechs">
+
+  <div class="loader-grid"></div>
+  <div class="loader-noise"></div>
+  <div class="loader-glow"></div>
+  <div class="loader-scan"></div>
+
+  <!-- Road strip -->
+  <div class="loader-road">
+    <div class="loader-road-dashes"></div>
+  </div>
+
+  <!-- Car driving in from left -->
+  <div id="loader-car-wrap">
+    <!-- Exhaust puffs emerge from the left/back of car -->
+    <div class="loader-exhaust">
+      <div class="loader-puff"></div>
+      <div class="loader-puff"></div>
+      <div class="loader-puff"></div>
+    </div>
+
+    <!-- Headlight glow to the right -->
+    <div class="loader-headlight"></div>
+
+    <!-- Industrial Generator / Truck SVG Car -->
+    <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" width="280" height="90">
+      <!-- Truck body - main cabin -->
+      <rect x="148" y="18" width="90" height="48" rx="4" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+      <!-- Cabin roof accent -->
+      <rect x="148" y="18" width="90" height="5" rx="2" fill="#e31837" opacity="0.9"/>
+
+      <!-- Truck cab -->
+      <rect x="218" y="14" width="52" height="52" rx="3" fill="#222" stroke="#333" stroke-width="1"/>
+      <!-- Cab top -->
+      <rect x="218" y="14" width="52" height="5" rx="2" fill="#e31837" opacity="0.85"/>
+      <!-- Windshield -->
+      <rect x="225" y="22" width="32" height="22" rx="2" fill="#1a3a3a" stroke="#2a5a5a" stroke-width="0.8"/>
+      <!-- Windshield glare -->
+      <line x1="228" y1="24" x2="237" y2="40" stroke="rgba(100,200,220,0.15)" stroke-width="1.5"/>
+
+      <!-- Headlights -->
+      <rect x="267" y="26" width="8" height="6" rx="1" fill="#ffe066" opacity="0.9"/>
+      <rect x="267" y="35" width="8" height="5" rx="1" fill="#ff9900" opacity="0.7"/>
+
+      <!-- Truck cab door line -->
+      <line x1="238" y1="19" x2="238" y2="66" stroke="#2a2a2a" stroke-width="0.8"/>
+      <!-- Door handle -->
+      <rect x="242" y="40" width="10" height="3" rx="1.5" fill="#333"/>
+
+      <!-- Company name on cargo body -->
+      <text x="190" y="36" font-family="'Bebas Neue', sans-serif" font-size="10" fill="#e31837" text-anchor="middle" letter-spacing="2">TECHNO</text>
+      <text x="190" y="48" font-family="'Bebas Neue', sans-serif" font-size="7" fill="#c5a059" text-anchor="middle" letter-spacing="1.5">ELECTROMECHS</text>
+
+      <!-- Cargo body detail lines -->
+      <line x1="162" y1="22" x2="162" y2="66" stroke="#252525" stroke-width="0.8"/>
+      <line x1="176" y1="22" x2="176" y2="66" stroke="#252525" stroke-width="0.8"/>
+      <line x1="190" y1="22" x2="190" y2="22" stroke="#252525" stroke-width="0"/>
+      <line x1="204" y1="22" x2="204" y2="66" stroke="#252525" stroke-width="0.8"/>
+
+      <!-- Power indicator light on cargo -->
+      <circle cx="156" cy="28" r="3" fill="#e31837">
+        <animate attributeName="opacity" values="1;0.1;1" dur="0.7s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Undercarriage -->
+      <rect x="150" y="62" width="126" height="8" rx="0" fill="#111" stroke="#1a1a1a" stroke-width="0.8"/>
+
+      <!-- Rear wheel (left/back) -->
+      <g class="car-wheel">
+        <circle cx="175" cy="75" r="14" fill="#111" stroke="#333" stroke-width="2"/>
+        <circle cx="175" cy="75" r="9" fill="#1a1a1a" stroke="#e31837" stroke-width="1.2"/>
+        <circle cx="175" cy="75" r="4" fill="#e31837" opacity="0.7"/>
+        <!-- Spokes -->
+        <line x1="175" y1="66" x2="175" y2="84" stroke="#444" stroke-width="1.2"/>
+        <line x1="166" y1="75" x2="184" y2="75" stroke="#444" stroke-width="1.2"/>
+        <line x1="169" y1="69" x2="181" y2="81" stroke="#333" stroke-width="0.8"/>
+        <line x1="181" y1="69" x2="169" y2="81" stroke="#333" stroke-width="0.8"/>
+      </g>
+
+      <!-- Front wheel (right/front) -->
+      <g class="car-wheel">
+        <circle cx="245" cy="75" r="14" fill="#111" stroke="#333" stroke-width="2"/>
+        <circle cx="245" cy="75" r="9" fill="#1a1a1a" stroke="#e31837" stroke-width="1.2"/>
+        <circle cx="245" cy="75" r="4" fill="#e31837" opacity="0.7"/>
+        <!-- Spokes -->
+        <line x1="245" y1="66" x2="245" y2="84" stroke="#444" stroke-width="1.2"/>
+        <line x1="236" y1="75" x2="254" y2="75" stroke="#444" stroke-width="1.2"/>
+        <line x1="239" y1="69" x2="251" y2="81" stroke="#333" stroke-width="0.8"/>
+        <line x1="251" y1="69" x2="239" y2="81" stroke="#333" stroke-width="0.8"/>
+      </g>
+
+      <!-- Exhaust pipe on back left -->
+      <rect x="146" y="28" width="5" height="16" rx="1" fill="#333" stroke="#444" stroke-width="0.8"/>
+      <circle cx="148" cy="26" r="3" fill="#555" opacity="0.5">
+        <animate attributeName="cy" values="26;20;14" dur="0.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.5;0.2;0" dur="0.8s" repeatCount="indefinite"/>
+        <animate attributeName="r" values="3;5;7" dur="0.8s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Bumper -->
+      <rect x="270" y="52" width="8" height="14" rx="1" fill="#1a1a1a" stroke="#333" stroke-width="0.8"/>
+
+      <!-- Side mirror -->
+      <rect x="217" y="22" width="3" height="8" rx="1" fill="#2a2a2a" stroke="#333" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Centered text content -->
+  <div class="loader-content">
+    <div class="loader-eyebrow">Since 1999 &nbsp;·&nbsp; Kolhapur</div>
+    <div class="loader-brand">Techno <em>Electro</em>mechs</div>
+    <div class="loader-gold-line"></div>
+    <div class="loader-tagline">
+      Serving Customer Power Needs for More Than <strong>25 Years</strong><br>
+      in Maharashtra &amp; Karnataka
+    </div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar-pct" id="loaderPct">0%</div>
+      <div class="loader-bar-track">
+        <div class="loader-bar-fill"></div>
+      </div>
+      <div class="loader-status" id="loaderStatus">Initializing power systems…</div>
+    </div>
+  </div>
+
+</div>
+<!-- END LOADING SCREEN -->
 
 <!-- ═══ CUSTOM CURSOR ═══ -->
 <div id="cursor-wrap">
   <svg id="cursor-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <!-- Generator body -->
     <rect x="8" y="20" width="48" height="30" rx="3" fill="#1a1a1a" stroke="#FF8C00" stroke-width="1.5"/>
-    <!-- Top bar -->
     <rect x="8" y="16" width="48" height="6" rx="2" fill="#FF8C00" opacity="0.9"/>
-    <!-- Engine coil left -->
     <circle cx="22" cy="35" r="8" fill="none" stroke="#FF8C00" stroke-width="2"/>
     <circle cx="22" cy="35" r="4" fill="#FF8C00" opacity="0.3"/>
-    <!-- Engine coil right -->
     <circle cx="42" cy="35" r="8" fill="none" stroke="#FF8C00" stroke-width="2"/>
     <circle cx="42" cy="35" r="4" fill="#FF8C00" opacity="0.3"/>
-    <!-- Center bolt -->
     <rect x="29" y="31" width="6" height="8" rx="1" fill="#FF8C00"/>
-    <!-- Exhaust pipe -->
     <rect x="52" y="10" width="6" height="14" rx="2" fill="#555" stroke="#FF8C00" stroke-width="1"/>
-    <!-- Exhaust puff animated -->
     <circle id="exhaust" cx="55" cy="8" r="3" fill="#FF8C00" opacity="0.6">
       <animate attributeName="cy" values="8;2;-2" dur="1s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="0.6;0.3;0" dur="1s" repeatCount="indefinite"/>
       <animate attributeName="r" values="3;4;5" dur="1s" repeatCount="indefinite"/>
     </circle>
-    <!-- Legs -->
     <rect x="12" y="49" width="6" height="8" rx="1" fill="#FF8C00" opacity="0.7"/>
     <rect x="46" y="49" width="6" height="8" rx="1" fill="#FF8C00" opacity="0.7"/>
-    <!-- Power light blinking -->
     <circle cx="18" cy="24" r="2.5" fill="#FF8C00">
       <animate attributeName="opacity" values="1;0.1;1" dur="0.8s" repeatCount="indefinite"/>
     </circle>
-    <!-- Fuel indicator -->
     <rect x="30" y="21" width="16" height="4" rx="1" fill="#222" stroke="#FF8C00" stroke-width="0.8"/>
     <rect x="31" y="22" width="10" height="2" rx="0.5" fill="#FF8C00"/>
-    <!-- Cursor tip point -->
     <line x1="32" y1="60" x2="32" y2="58" stroke="#FF8C00" stroke-width="1.5" stroke-dasharray="2 1">
       <animate attributeName="opacity" values="1;0;1" dur="0.5s" repeatCount="indefinite"/>
     </line>
@@ -991,7 +1327,6 @@
         <div class="slide-tag">SN-006</div>
         <div class="slide-label">MIDC Industrial Installations</div>
       </div>
-      <!-- Duplicated for seamless loop -->
       <div class="slider-slide"><img src="https://lh3.googleusercontent.com/p/AF1QipMnQVOLrwAsNSPFVaj1rLwkh8uQbi7JM7mU7Gr6=w243-h174-n-k-no-nu" alt="Industrial DG Set" loading="lazy"/><div class="slide-tag">SN-001</div><div class="slide-label">Industrial DG Set Installation</div></div>
       <div class="slider-slide"><img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAHFGTfFx-LdrU1wVFPQLV3YQ4F22eeh3Nb48ii9d3c3oVfQKtG55ZlnHoqer9tMfFvfX7O4sEySAe33VgJKsKiTT7kqF2WMCXzMmYkeroZkoKZhVKWG1-mqBywgJ9wlHbLHe37O=w243-h174-n-k-no-nu" alt="Power Plant" loading="lazy"/><div class="slide-tag">SN-002</div><div class="slide-label">Heavy Industrial Power Solutions</div></div>
       <div class="slider-slide"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="AMF Panel" loading="lazy"/><div class="slide-tag">SN-003</div><div class="slide-label">AMF Panel & Control Systems</div></div>
@@ -1320,27 +1655,61 @@
 </footer>
 
 <script>
+/* ═══ LOADING SCREEN CONTROLLER ═══ */
+(function(){
+  const loader  = document.getElementById('loader-screen');
+  const pctEl   = document.getElementById('loaderPct');
+  const statusEl = document.getElementById('loaderStatus');
+  const statuses = [
+    'Initializing power systems\u2026',
+    'Loading DG specifications\u2026',
+    'Checking CPCB compliance\u2026',
+    'Connecting to service network\u2026',
+    'Ready.'
+  ];
+
+  /* Animate the percentage counter */
+  const startTime = performance.now();
+  const duration  = 2700; /* ms — matches CSS bar animation */
+
+  function tick(now){
+    const elapsed = now - startTime;
+    const pct = Math.min(100, Math.round((elapsed / duration) * 100));
+    pctEl.textContent = pct + '%';
+    /* Cycle status messages */
+    const idx = Math.min(statuses.length - 1, Math.floor((pct / 100) * statuses.length));
+    statusEl.textContent = statuses[idx];
+    if(pct < 100){ requestAnimationFrame(tick); }
+  }
+  requestAnimationFrame(tick);
+
+  /* Dismiss after exactly 3 seconds */
+  setTimeout(function(){
+    loader.classList.add('hide');
+    document.body.classList.remove('loading');
+    /* Remove from DOM after transition ends (saves memory) */
+    loader.addEventListener('transitionend', function(){
+      loader.remove();
+    }, { once: true });
+  }, 3000);
+})();
+
 /* ═══ CUSTOM CURSOR ═══ */
-const cursorWrap = document.getElementById('cursor-wrap');
+const cursorWrap  = document.getElementById('cursor-wrap');
 const cursorTrail = document.getElementById('cursor-trail');
-let mouseX = 0, mouseY = 0;
-let trailX = 0, trailY = 0;
+let mouseX = 0, mouseY = 0, trailX = 0, trailY = 0;
 
 document.addEventListener('mousemove', e => {
   mouseX = e.clientX; mouseY = e.clientY;
   cursorWrap.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
 });
-
-// Smooth trail
-function animateTrail() {
+function animateTrail(){
   trailX += (mouseX - trailX) * 0.15;
   trailY += (mouseY - trailY) * 0.15;
   cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%)`;
   requestAnimationFrame(animateTrail);
 }
 animateTrail();
-
-// Hover effect on interactive elements
 document.querySelectorAll('a, button, [onclick], input, select, textarea').forEach(el => {
   el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
   el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
@@ -1358,7 +1727,7 @@ function showToast(msg){
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
-function trackWA(source){ saveLead('whatsapp_click', {source}); showToast('✓ Opening WhatsApp…'); }
+function trackWA(source){ saveLead('whatsapp_click', {source}); showToast('\u2713 Opening WhatsApp\u2026'); }
 
 /* ═══ WHATSAPP POPUP ═══ */
 (function(){
@@ -1366,7 +1735,7 @@ function trackWA(source){ saveLead('whatsapp_click', {source}); showToast('✓ O
     setTimeout(() => {
       const p = document.getElementById('waPopup');
       if(p){ p.classList.add('show'); saveLead('popup_shown', {}); }
-    }, 5000);
+    }, 8000); /* Delayed slightly more to not clash with loader */
   }
 })();
 function dismissPopup(){
@@ -1403,21 +1772,20 @@ function sendEnquiry(){
   const kv = document.getElementById('kv').value;
   const mg = document.getElementById('mg').value.trim();
   saveLead('form_submit', {name:nm, phone:ph, company:co, location:lo, requirement:rq, kva:kv});
-  showToast('✓ Enquiry sent! Opening WhatsApp…');
+  showToast('\u2713 Enquiry sent! Opening WhatsApp\u2026');
   const msg = encodeURIComponent(
-    `*New Enquiry — Techno Electromechs Website*\n\n`+
-    `👤 *Name:* ${nm}\n`+
-    `📞 *Phone:* ${ph}\n`+
-    (co?`🏢 *Company:* ${co}\n`:'')+
-    (lo?`📍 *Location:* ${lo}\n`:'')+
-    `⚡ *Requirement:* ${rq}\n`+
-    (kv?`🔌 *kVA Range:* ${kv}\n`:'')+
-    (mg?`💬 *Details:* ${mg}`:'')
+    `*New Enquiry \u2014 Techno Electromechs Website*\n\n`+
+    `\uD83D\uDC64 *Name:* ${nm}\n`+
+    `\uD83D\uDCDE *Phone:* ${ph}\n`+
+    (co?`\uD83C\uDFE2 *Company:* ${co}\n`:'')+
+    (lo?`\uD83D\uDCCD *Location:* ${lo}\n`:'')+
+    `\u26A1 *Requirement:* ${rq}\n`+
+    (kv?`\uD83D\uDD0C *kVA Range:* ${kv}\n`:'')+
+    (mg?`\uD83D\uDCAC *Details:* ${mg}`:'')
   );
   window.open(`https://wa.me/919823012044?text=${msg}`, '_blank');
 }
 
-/* Admin: viewLeads() in console */
 window.viewLeads = function(){
   const logs = getLogs();
   if(!logs.length){ console.log('No leads yet.'); return; }

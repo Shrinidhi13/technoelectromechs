@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /technoelectromechs/index%20-%20Copy.html
+
+Sitemap: https://shrinidhi13.github.io/technoelectromechs/sitemap.xml

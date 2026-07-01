@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#fffdf8" stroke-opacity=".055"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#15171a"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="0" y="0" width="1200" height="10" fill="#d62c32"/>
+  <path d="M834 0h366v365L945 620H834z" fill="#202328"/>
+  <path d="M910 100h195l35 35v225H910z" fill="#f1efe8"/>
+  <path d="M944 163h160M944 190h160M944 217h160M944 244h160" stroke="#15171a" stroke-opacity=".28" stroke-width="7"/>
+  <rect x="963" y="293" width="112" height="27" fill="#d62c32"/>
+  <circle cx="963" cy="360" r="13" fill="#15171a"/>
+  <circle cx="1086" cy="360" r="13" fill="#15171a"/>
+  <path d="M816 444h316" stroke="#fffdf8" stroke-opacity=".34"/>
+  <g font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#fffdf8">
+    <text x="816" y="478">UTILITY</text><text x="935" y="478">AMF</text><text x="1031" y="478">DG</text><text x="1102" y="478">LOAD</text>
+  </g>
+  <path d="M885 472h38M977 472h42M1058 472h32" stroke="#d62c32" stroke-width="3"/>
+  <rect x="76" y="64" width="74" height="74" fill="#d62c32"/>
+  <text x="113" y="113" text-anchor="middle" font-family="Arial Narrow, Arial, sans-serif" font-size="29" font-weight="800" fill="#fffdf8">TE</text>
+  <text x="172" y="91" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#fffdf8">Techno Electromechs</text>
+  <text x="172" y="121" font-family="monospace" font-size="13" font-weight="700" letter-spacing="2" fill="#92999d">POWER SYSTEMS · KOLHAPUR</text>
+  <text x="76" y="225" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#ff817f">MAHINDRA POWEROL AUTHORIZED DEALER</text>
+  <text x="76" y="318" font-family="Arial Narrow, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3" fill="#fffdf8">DG SETS ENGINEERED</text>
+  <text x="76" y="393" font-family="Arial Narrow, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3" fill="#fffdf8">AROUND YOUR LOAD.</text>
+  <text x="76" y="458" font-family="Arial, sans-serif" font-size="21" fill="#aeb3b5">Powerol DG projects up to 1,250 kVA · Installation · AMC</text>
+  <path d="M76 518h610" stroke="#fffdf8" stroke-opacity=".26"/>
+  <text x="76" y="558" font-family="monospace" font-size="14" font-weight="700" letter-spacing="1.5" fill="#fffdf8">KOLHAPUR · SANGLI · SATARA · SOUTH MAHARASHTRA</text>
+  <circle cx="724" cy="553" r="6" fill="#42b977"/>
+</svg>

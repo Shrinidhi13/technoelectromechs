@@ -7,6 +7,7 @@
   const menuClose = document.getElementById('menuClose');
   const scrollProgress = document.getElementById('scrollProgress');
   const toast = document.getElementById('toast');
+  const pageRegions = Array.from(document.querySelectorAll('header, main, footer, .mobile-actions'));
 
   let returnFocus = null;
   let menuTimer = null;
@@ -17,6 +18,7 @@
     returnFocus = document.activeElement;
     mobileMenu.hidden = false;
     document.body.classList.add('menu-open');
+    pageRegions.forEach((region) => { region.setAttribute('inert', ''); });
     menuToggle.setAttribute('aria-expanded', 'true');
     menuToggle.setAttribute('aria-label', 'Close navigation menu');
     window.requestAnimationFrame(() => {
@@ -25,7 +27,7 @@
     });
   }
 
-  function closeMenu(restoreFocus = true) {
+  function closeMenu(restoreFocus = true, focusTarget = null) {
     mobileMenu.classList.remove('is-open');
     document.body.classList.remove('menu-open');
     menuToggle.setAttribute('aria-expanded', 'false');
@@ -33,7 +35,17 @@
 
     const finish = () => {
       mobileMenu.hidden = true;
-      if (restoreFocus && returnFocus instanceof HTMLElement) returnFocus.focus();
+      pageRegions.forEach((region) => { region.removeAttribute('inert'); });
+      if (focusTarget instanceof HTMLElement) {
+        const hadTabindex = focusTarget.hasAttribute('tabindex');
+        if (!hadTabindex) focusTarget.setAttribute('tabindex', '-1');
+        focusTarget.focus({ preventScroll: true });
+        if (!hadTabindex) {
+          focusTarget.addEventListener('blur', () => focusTarget.removeAttribute('tabindex'), { once: true });
+        }
+      } else if (restoreFocus && returnFocus instanceof HTMLElement) {
+        returnFocus.focus();
+      }
     };
 
     if (reducedMotion) finish();
@@ -68,8 +80,15 @@
   menuClose.addEventListener('click', () => closeMenu());
   mobileMenu.addEventListener('keydown', trapMenuFocus);
   mobileMenu.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener('click', () => closeMenu(false));
+    link.addEventListener('click', () => {
+      const section = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      const focusTarget = section?.querySelector('h1, h2, h3') || section;
+      closeMenu(false, focusTarget);
+    });
   });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1040 && !mobileMenu.hidden) closeMenu(false);
+  }, { passive: true });
 
   const rangeData = {
     compact: {
@@ -133,6 +152,7 @@
     if (!data) return;
 
     rangePanel.classList.add('is-changing');
+    rangePanel.setAttribute('aria-busy', 'true');
     rangeChoices.forEach((choice) => {
       const active = choice.dataset.range === key;
       choice.classList.toggle('is-active', active);
@@ -151,6 +171,7 @@
       rangeImage.src = data.image;
       rangeImage.alt = data.alt;
       rangeWatermark.textContent = data.watermark;
+      rangePanel.setAttribute('aria-busy', 'false');
       window.requestAnimationFrame(() => rangePanel.classList.remove('is-changing'));
     };
 
@@ -203,7 +224,10 @@
         .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (!visible) return;
       navLinks.forEach((link) => {
-        link.classList.toggle('is-active', link.getAttribute('href') === `#${visible.target.id}`);
+        const active = link.getAttribute('href') === `#${visible.target.id}`;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
       });
     }, { rootMargin: '-28% 0px -58% 0px', threshold: [0, .15, .5] });
     observedSections.forEach((section) => sectionObserver.observe(section));
@@ -217,6 +241,21 @@
   }
 
   const quoteForm = document.getElementById('quoteForm');
+  quoteForm.addEventListener('invalid', (event) => {
+    event.target.setAttribute('aria-invalid', 'true');
+    showToast('Please complete the highlighted required fields.');
+    window.requestAnimationFrame(() => {
+      const firstInvalid = quoteForm.querySelector(':invalid');
+      if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
+    });
+  }, true);
+
+  quoteForm.addEventListener('input', (event) => {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement) {
+      if (event.target.validity.valid) event.target.removeAttribute('aria-invalid');
+    }
+  });
+
   quoteForm.addEventListener('submit', (event) => {
     event.preventDefault();
     if (!quoteForm.reportValidity()) return;

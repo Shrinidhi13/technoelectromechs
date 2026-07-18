@@ -144,9 +144,9 @@
     </div>
   </header>
 
-  <div class="mobile-menu" id="mobileMenu" hidden>
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle" hidden>
     <div class="mobile-menu__top">
-      <span class="mono-label">Navigation / 01</span>
+      <span class="mono-label" id="mobileMenuTitle">Navigation / 01</span>
       <button class="menu-close" id="menuClose" type="button" aria-label="Close navigation menu">Close <span aria-hidden="true">×</span></button>
     </div>
     <nav aria-label="Mobile navigation">
@@ -222,6 +222,20 @@
         <div><span>Service area</span><strong>South Maharashtra</strong></div>
         <div><span>Lifecycle support</span><strong>Supply · Install · Maintain</strong></div>
       </div>
+
+      <div class="decision-strip shell reveal" aria-labelledby="decisionTitle">
+        <div class="decision-strip__intro">
+          <p class="eyebrow">Requirement paths</p>
+          <h2 id="decisionTitle">What are you planning?</h2>
+          <p>Choose the closest requirement. You can still begin with a site and load review if the exact scope is not yet clear.</p>
+        </div>
+        <nav class="decision-grid" aria-label="Choose a power-system requirement">
+          <a href="#dg-range"><span>01</span><strong>New DG set</strong><small>Range guidance and load assessment</small></a>
+          <a href="dg-set-installation-kolhapur.html"><span>02</span><strong>Installation</strong><small>Site readiness and commissioning</small></a>
+          <a href="amf-panel-installation-kolhapur.html"><span>03</span><strong>AMF panel</strong><small>Automatic changeover planning</small></a>
+          <a href="generator-amc-service-kolhapur.html"><span>04</span><strong>AMC and service</strong><small>Preventive lifecycle support</small></a>
+        </nav>
+      </div>
     </section>
 
     <section class="intro-section section-pad">
@@ -249,20 +263,20 @@
         </div>
 
         <div class="range-console reveal">
-          <div class="range-choices" aria-label="Choose a generator range">
-            <button class="range-choice is-active" type="button" data-range="compact" aria-pressed="true">
+          <div class="range-choices" role="group" aria-label="Choose a generator range">
+            <button class="range-choice is-active" type="button" data-range="compact" aria-controls="rangePanel" aria-pressed="true">
               <span>01 / Compact</span><strong>5–30 kVA</strong><i aria-hidden="true">→</i>
             </button>
-            <button class="range-choice" type="button" data-range="commercial" aria-pressed="false">
+            <button class="range-choice" type="button" data-range="commercial" aria-controls="rangePanel" aria-pressed="false">
               <span>02 / Commercial</span><strong>35–125 kVA</strong><i aria-hidden="true">→</i>
             </button>
-            <button class="range-choice" type="button" data-range="industrial" aria-pressed="false">
+            <button class="range-choice" type="button" data-range="industrial" aria-controls="rangePanel" aria-pressed="false">
               <span>03 / Industrial</span><strong>160–320 kVA</strong><i aria-hidden="true">→</i>
             </button>
-            <button class="range-choice" type="button" data-range="heavy" aria-pressed="false">
+            <button class="range-choice" type="button" data-range="heavy" aria-controls="rangePanel" aria-pressed="false">
               <span>04 / High capacity</span><strong>400–625 kVA</strong><i aria-hidden="true">→</i>
             </button>
-            <button class="range-choice" type="button" data-range="project" aria-pressed="false">
+            <button class="range-choice" type="button" data-range="project" aria-controls="rangePanel" aria-pressed="false">
               <span>05 / Project scale</span><strong>1010–1250 kVA</strong><i aria-hidden="true">→</i>
             </button>
           </div>
@@ -538,8 +552,9 @@
           </div>
         </div>
 
-        <form class="quote-form reveal" id="quoteForm">
+        <form class="quote-form reveal" id="quoteForm" aria-describedby="quoteHelp quotePrivacy">
           <div class="form-head"><span>PROJECT ENQUIRY</span><strong>REF / NEW</strong></div>
+          <p class="form-instruction" id="quoteHelp"><strong>Start with what you know.</strong> Name, phone and requirement are required; range and site details can be approximate.</p>
           <div class="form-grid">
             <label>
               <span>Your name *</span>
@@ -595,8 +610,8 @@
               <textarea name="message" rows="4" placeholder="Connected load, major motors, existing DG, operating hours or other useful details"></textarea>
             </label>
           </div>
-          <p class="privacy-note">This page does not store your form details. Selecting the button prepares a WhatsApp message for you to review before sending.</p>
-          <button class="button button--primary button--submit" type="submit">Prepare WhatsApp enquiry <span aria-hidden="true">↗</span></button>
+          <p class="privacy-note" id="quotePrivacy">This page does not store your form details. Selecting the button prepares a WhatsApp message for you to review before sending.</p>
+          <button class="button button--primary button--submit" type="submit" aria-describedby="quotePrivacy">Prepare WhatsApp enquiry <span aria-hidden="true">↗</span></button>
         </form>
       </div>
     </section>
@@ -652,8 +667,9 @@
   </footer>
 
   <div class="mobile-actions" aria-label="Quick contact actions">
-    <a href="tel:+919823012044">Call now</a>
-    <a href="https://wa.me/919823012044?text=Hello%20Venkatesh%20Bhat%2C%20I%20need%20help%20with%20a%20DG%20set%20requirement." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <a href="tel:+919823012044" aria-label="Call Techno Electromechs">Call</a>
+    <a href="https://wa.me/919823012044?text=Hello%20Venkatesh%20Bhat%2C%20I%20need%20help%20with%20a%20DG%20set%20requirement." target="_blank" rel="noopener noreferrer" aria-label="Discuss a requirement on WhatsApp">WhatsApp</a>
+    <a href="#contact">Assessment</a>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -1,0 +1,16 @@
+{
+  "name": "Techno Electromechs",
+  "short_name": "Techno Electromechs",
+  "start_url": "/technoelectromechs/",
+  "scope": "/technoelectromechs/",
+  "display": "browser",
+  "background_color": "#f7f7f5",
+  "theme_color": "#1d1d1f",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

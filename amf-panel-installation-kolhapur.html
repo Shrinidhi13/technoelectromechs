@@ -15,12 +15,21 @@
   <meta property="og:title" content="AMF Panel Installation in Kolhapur" />
   <meta property="og:description" content="Automatic mains-failure and DG changeover planning for dependable backup-power operation." />
   <meta property="og:image" content="https://shrinidhi13.github.io/technoelectromechs/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="AMF panel planning and installation in Kolhapur by Techno Electromechs" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AMF Panel Installation in Kolhapur" />
+  <meta name="twitter:description" content="Automatic mains-failure and DG changeover planning for dependable backup-power operation." />
+  <meta name="twitter:image" content="https://shrinidhi13.github.io/technoelectromechs/assets/og-image.png" />
+  <meta name="twitter:image:alt" content="AMF panel planning and installation in Kolhapur by Techno Electromechs" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/premium.css" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -90,12 +99,35 @@
       <article class="longform">
         <section id="purpose"><p class="eyebrow">Purpose / 01</p><h2>Automation should follow the site’s operating logic.</h2><p>An automatic mains-failure panel monitors the utility supply and coordinates DG starting and load transfer when approved conditions are met. When normal supply returns and remains stable, the sequence transfers the load back and allows the generator to complete its shutdown routine.</p><p>The concept is simple, but the correct panel and sequence depend on the electrical system, essential load, DG controls, switchgear and customer operating priorities. Techno Electromechs helps connect those inputs before panel integration.</p><div class="content-callout"><span>Design principle</span><p>An AMF panel is not a universal box. Current rating, fault level, changeover arrangement, sensing, protection, interlocks, cable interfaces and control logic must match the approved site design.</p></div></section>
 
-        <section id="sequence"><p class="eyebrow">Operating sequence / 02</p><h2>What happens during a mains failure?</h2><div class="info-grid">
-          <div class="info-card"><span>STATE 01</span><h3>Monitor</h3><p>The controller observes the utility supply against the configured operating conditions.</p></div>
-          <div class="info-card"><span>STATE 02</span><h3>Start</h3><p>After the approved delay and failure logic, the controller issues the DG start command.</p></div>
-          <div class="info-card"><span>STATE 03</span><h3>Transfer</h3><p>Once DG voltage and frequency are acceptable, the essential load transfers according to the design.</p></div>
-          <div class="info-card"><span>STATE 04</span><h3>Restore</h3><p>After stable mains return, the load transfers back and the DG completes cool-down and stop.</p></div>
-        </div><p>Actual timers, permissives, interlocks and alarm behaviour are set for the approved equipment and operating requirement. They should be documented and demonstrated during handover.</p></section>
+        <section id="sequence">
+          <p class="eyebrow">Operating sequence / 02</p>
+          <h2>What happens during a mains failure?</h2>
+          <div class="amf-experience" data-amf-experience data-state="monitor">
+            <div class="amf-visual" role="img" aria-label="Representative AMF sequence. Utility and generator power connect to the transfer panel, while the AMF controller sends a separate start command to the DG. Current state: utility available and DG on standby.">
+              <div class="amf-visual__head"><span>Representative operating sequence</span><strong data-amf-status>Utility available · DG standby</strong></div>
+              <div class="amf-network" aria-hidden="true">
+                <div class="amf-node amf-node--utility"><span>Source A</span><strong>Utility</strong><small data-amf-utility-state>Available</small></div>
+                <div class="amf-connector amf-connector--utility"><span>Power path</span></div>
+                <div class="amf-node amf-node--panel"><span>Control + transfer</span><strong>AMF panel</strong><small data-amf-panel-state>Monitoring</small></div>
+                <div class="amf-connector amf-connector--load"><span>Power path</span></div>
+                <div class="amf-node amf-node--load"><span>Supported circuit</span><strong>Load</strong><small data-amf-load-state>Utility supplied</small></div>
+                <div class="amf-vertical-links">
+                  <div class="amf-connector amf-connector--dg-power"><span>DG power to panel</span></div>
+                  <div class="amf-connector amf-connector--control"><span>Start command to DG</span></div>
+                </div>
+                <div class="amf-node amf-node--dg"><span>Source B</span><strong>DG set</strong><small data-amf-dg-state>Standby</small></div>
+              </div>
+              <p class="amf-visual__note">Control signals and electrical power paths are shown separately. Exact timers, interlocks and transfer arrangements follow the approved site design.</p>
+            </div>
+            <div class="amf-state-controls" role="group" aria-label="Choose an AMF operating state">
+              <button class="amf-state-button is-active" type="button" data-amf-state="monitor" aria-pressed="true" disabled><span>STATE 01</span><strong>Monitor</strong><small>Observe the utility supply against configured conditions.</small></button>
+              <button class="amf-state-button" type="button" data-amf-state="start" aria-pressed="false" disabled><span>STATE 02</span><strong>Start</strong><small>Detect failure and issue the approved DG start command.</small></button>
+              <button class="amf-state-button" type="button" data-amf-state="transfer" aria-pressed="false" disabled><span>STATE 03</span><strong>Transfer</strong><small>Accept DG output before transferring the supported load.</small></button>
+              <button class="amf-state-button" type="button" data-amf-state="restore" aria-pressed="false" disabled><span>STATE 04</span><strong>Restore</strong><small>Verify utility return, retransfer, cool down and stop.</small></button>
+            </div>
+          </div>
+          <p>Actual timers, permissives, interlocks and alarm behaviour are set for the approved equipment and operating requirement. They should be documented and demonstrated during handover.</p>
+        </section>
 
         <section id="inputs"><p class="eyebrow">Required inputs / 03</p><h2>Information needed before panel selection.</h2><ul class="content-list">
           <li><strong>Supply arrangement:</strong> incoming source, voltage, phases, existing switchgear and protection.</li>
@@ -137,11 +169,17 @@
   </main>
 
   <footer class="site-footer"><div class="shell footer-grid"><div class="footer-brand"><a class="brand brand--footer" href="index.html"><span class="brand-mark" aria-hidden="true"><span>TE</span></span><span class="brand-copy"><strong>Techno Electromechs</strong><small>Power systems · Kolhapur</small></span></a><p>Mahindra Powerol DG projects up to 1,250 kVA, installation and lifecycle support for South Maharashtra.</p></div><div class="footer-links"><span>Service guides</span><a href="mahindra-powerol-1010-1250-kva.html">1010–1250 kVA</a><a href="dg-set-installation-kolhapur.html">DG installation</a><a href="generator-amc-service-kolhapur.html">Generator AMC</a></div><div class="footer-links"><span>Contact</span><a href="tel:+919823012044">+91 98230 12044</a><a href="mailto:techno.tems@gmail.com">techno.tems@gmail.com</a><a href="index.html#contact">Request assessment</a></div></div><div class="shell footer-bottom"><span>© 2026 Techno Electromechs</span><nav class="footer-legal" aria-label="Legal and site links"><a href="privacy-policy.html">Privacy policy</a><a href="sitemap.xml">Sitemap</a></nav><span>Authorized Mahindra Powerol dealer · Kolhapur</span></div></footer>
+  <a class="floating-whatsapp" href="https://wa.me/919823012044?text=Hello%20Venkatesh%20Bhat%2C%20I%20need%20help%20with%20a%20DG%20set%20requirement." target="_blank" rel="noopener noreferrer" aria-label="Contact us on WhatsApp — Techno Electromechs" title="Contact us on WhatsApp">
+    <span class="floating-whatsapp__note" aria-hidden="true">Contact us on WhatsApp</span>
+    <img class="floating-whatsapp__icon" src="assets/whatsapp-mark.svg" width="46" height="46" alt="" aria-hidden="true" />
+  </a>
+
   <div class="mobile-actions" aria-label="Quick contact actions">
     <a href="tel:+919823012044" aria-label="Call Techno Electromechs">Call</a>
     <a href="https://wa.me/919823012044?text=Hello%20Venkatesh%20Bhat%2C%20I%20need%20help%20with%20a%20DG%20set%20requirement." target="_blank" rel="noopener noreferrer" aria-label="Discuss a requirement on WhatsApp">WhatsApp</a>
     <a href="index.html#contact">Assessment</a>
   </div>
   <script src="assets/navigation.js" defer></script>
+  <script src="assets/engineering-experience.js" defer></script>
 </body>
 </html>

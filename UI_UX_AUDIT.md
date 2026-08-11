@@ -1,6 +1,7 @@
 # Techno Electromechs UI/UX Audit
 
 Audit date: 18 July 2026  
+Calm-premium reference pass: 7 August 2026  
 Scope: `index.html`, four commercial service/product pages, privacy page, shared CSS/JavaScript, public assets, robots, sitemap, schema, and enquiry behavior.
 
 ## What already works
@@ -47,12 +48,20 @@ The refresh must not alter:
 
 All ten improvements were implemented while retaining the static HTML/CSS/JavaScript architecture. No public filename, canonical, schema block, sitemap entry, robots rule, business claim, enquiry field, telephone number, WhatsApp destination, or user-review-before-send behavior was intentionally changed.
 
+## Calm premium reference adaptation
+
+- Used the Apple Mac page as a directional reference for restraint, whitespace, soft neutral surfaces, product focus, rounded grouping, and functional motion—not as a visual or content template.
+- Retained the site's distinct identity through Mahindra red, charcoal engineering chapters, generator imagery, mono technical labels, kVA selection, AMF diagrams, local proof, and service language.
+- Added the adaptation as a reversible shared layer in `assets/premium.css`; no React, framework, build step, or URL change was introduced.
+- Updated `design-system/techno-electromechs/MASTER.md` with the calm industrial token system, component geometry, motion dials, and reference boundaries.
+
 ## Validation record
 
-- Browser-tested every public page at 375 x 812 and 1440 x 900; also checked the homepage at 320, 768, and 1024 pixel widths. No horizontal overflow was detected.
+- Browser-tested all six public pages across 320, 375, 768, 1024, and 1440 pixel widths (30 layout checks), plus a representative 812 x 375 landscape pass. No horizontal overflow was detected.
 - Parsed every JSON-LD block successfully and confirmed one H1 and no duplicate IDs on each public page.
 - Verified the three-way mobile Call / WhatsApp / Assessment dock and zero browser console warnings or errors.
-- Verified mobile-menu dialog semantics, background isolation, Escape-to-close, focus return, and a visible focus ring.
+- Verified mobile-menu dialog semantics, background isolation, Escape-to-close, delayed focus return, and a visible focus ring; closed page menus are removed from layout and hit testing.
 - Verified invalid enquiry submission focuses the first invalid field and announces clear feedback; the established WhatsApp payload remains unchanged.
-- Verified representative contrast ratios: red on warm paper 4.87:1, red on white 5.51:1, steel on warm paper 5.81:1, and muted footer text on charcoal 7.00:1.
-- Confirmed the CSS and JavaScript honor `prefers-reduced-motion`; both shared JavaScript files pass `node --check`.
+- Verified representative contrast ratios: red on warm paper 6.08:1, red on white 6.52:1, steel on warm paper 5.85:1, muted footer text on charcoal 6.96:1, and essential control borders on warm paper 3.04:1.
+- Confirmed white focus indicators reach 15.48:1 on the main charcoal chapter and 6.52:1 on the red mobile action.
+- Confirmed the CSS honors `prefers-reduced-motion`, `prefers-contrast: more`, and touch-device hover behavior; both shared JavaScript files pass `node --check` and the premium stylesheet has balanced syntax.

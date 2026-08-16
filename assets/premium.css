@@ -1921,3 +1921,96 @@ body.menu-open .floating-whatsapp {
   .installation-controls { display: none; }
   .amf-visual { color: var(--ink); background: var(--white); border: 1px solid var(--ink); }
 }
+
+/* Supplied company identity and homepage-only industrial-city atmosphere. */
+.brand-logo {
+  display: block;
+  width: 160px;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+  clip-path: inset(1px 0 0 3px);
+}
+
+.brand--footer .brand-logo {
+  width: 160px;
+  filter: brightness(0) invert(1);
+  opacity: .96;
+}
+
+.hero--city {
+  isolation: isolate;
+  background-color: var(--paper);
+  background-image: none;
+}
+
+.hero--city::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  width: 100%;
+  height: clamp(760px, 68vw, 980px);
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg,
+      rgba(247, 247, 245, .98) 0%,
+      rgba(247, 247, 245, .92) 28%,
+      rgba(247, 247, 245, .52) 54%,
+      rgba(247, 247, 245, .16) 100%),
+    linear-gradient(180deg,
+      rgba(247, 247, 245, .015) 0%,
+      rgba(247, 247, 245, .04) 58%,
+      rgba(247, 247, 245, .84) 100%),
+    url("hero/south-maharashtra-industrial-city.webp");
+  background-image:
+    linear-gradient(90deg,
+      rgba(247, 247, 245, .98) 0%,
+      rgba(247, 247, 245, .92) 28%,
+      rgba(247, 247, 245, .52) 54%,
+      rgba(247, 247, 245, .16) 100%),
+    linear-gradient(180deg,
+      rgba(247, 247, 245, .015) 0%,
+      rgba(247, 247, 245, .04) 58%,
+      rgba(247, 247, 245, .84) 100%),
+    image-set(
+      url("hero/south-maharashtra-industrial-city.avif") type("image/avif"),
+      url("hero/south-maharashtra-industrial-city.webp") type("image/webp")
+    );
+  background-repeat: no-repeat;
+  background-position: center 46%;
+  background-size: cover;
+  filter: saturate(.96) contrast(1.04);
+}
+
+.hero--city > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero--city .hero-lead { color: var(--ink-soft); }
+
+@media (max-width: 1040px) {
+  .hero--city::before {
+    height: clamp(820px, 116vw, 1120px);
+    background-position: 68% top;
+    opacity: .86;
+  }
+}
+
+@media (max-width: 700px) {
+  .brand-logo,
+  .brand--footer .brand-logo { width: 146px; }
+
+  .hero--city::before {
+    height: 960px;
+    background-position: 70% center;
+    opacity: .74;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-logo,
+  .brand--footer .brand-logo { width: 136px; }
+}

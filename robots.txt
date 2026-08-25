@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shrinidhi13.github.io/technoelectromechs/sitemap.xml
+Sitemap: https://technoelectromechs.vercel.app/sitemap.xml
